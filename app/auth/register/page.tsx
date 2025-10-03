@@ -94,7 +94,7 @@ export default function RegisterPage() {
     <main className="min-h-screen bg-neutral-50 flex items-center justify-center px-4 py-10">
       <section className="w-full max-w-3xl">
         <Link
-          href="/"
+          href="/auth/login"
           className="mb-4 inline-flex items-center gap-2 text-neutral-700 hover:text-neutral-900 transition-colors"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
