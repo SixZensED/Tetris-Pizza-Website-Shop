@@ -9,9 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@sit-sandbox/thai-bad-words": "^1.1.9",
+    "framer-motion": "^12.23.22",
+    "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.4"
+    "thai-bad-words": "^1.1.6"
   },
   "devDependencies": {
     "typescript": "^5",

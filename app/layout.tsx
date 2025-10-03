@@ -1,10 +1,63 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+﻿import type { Metadata } from "next";
+import localFont from "next/font/local";
+import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const lineSeedSans = localFont({
+  src: [
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Th.woff2",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Th.woff",
+      weight: "200",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Rg.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Rg.woff",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Bd.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_Bd.woff",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_He.woff2",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_He.woff",
+      weight: "800",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_XBd.woff2",
+      weight: "900",
+      style: "normal",
+    },
+    {
+      path: "../public/fonts/LINESeedSansTH_W_XBd.woff",
+      weight: "900",
+      style: "normal",
+    },
+  ],
+  variable: "--font-line-seed",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -25,7 +78,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${lineSeedSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
       </body>
