@@ -3,62 +3,17 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback } from "react";
+import { getTopBarCopy } from "../lib/translations";
+import { useLanguageContext, LanguageCode, SUPPORTED_LANGUAGES } from "../contexts/language-context";
 
-type LanguageCode = "TH" | "EN";
-
-const LANGUAGE_OPTIONS: LanguageCode[] = ["TH", "EN"];
-
-type CopyMap = {
-  loginCta: string;
-  keyAlt: string;
-  languageSelectorLabel: string;
-  globeAlt: string;
-  languageModalTitle: string;
-  languageModalDescription: string;
-};
-
-const COPY: Record<LanguageCode, CopyMap> = {
-    TH: {
-    loginCta: "\u0e40\u0e02\u0e49\u0e32\u0e2a\u0e39\u0e48\u0e23\u0e30\u0e1a / \u0e2a\u0e21\u0e31\u0e04\u0e23\u0e2a\u0e21\u0e32\u0e0a\u0e34\u0e01",
-    keyAlt: "\u0e44\u0e2d\u0e04\u0e2d\u0e19\u0e01\u0e38\u0e0d\u0e41\u0e08",
-    languageSelectorLabel: "\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e20\u0e32\u0e29\u0e32",
-    globeAlt: "\u0e44\u0e2d\u0e04\u0e2d\u0e19\u0e42\u0e25\u0e01",
-    languageModalTitle: "\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e20\u0e32\u0e29\u0e32\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13",
-    languageModalDescription: "\u0e1b\u0e23\u0e31\u0e1a\u0e1b\u0e23\u0e35\u0e48\u0e22\u0e19\u0e20\u0e32\u0e29\u0e32\u0e43\u0e2b\u0e49\u0e15\u0e23\u0e07\u0e01\u0e31\u0e1a\u0e04\u0e27\u0e32\u0e21\u0e0a\u0e2d\u0e1a\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13",
-  },
-  EN: {
-    loginCta: "Log in / Sign up",
-    keyAlt: "Key icon",
-    languageSelectorLabel: "Choose language",
-    globeAlt: "Globe icon",
-    languageModalTitle: "Choose your language",
-    languageModalDescription: "Switch languages to match your preference.",
-  },
-};
+const LANGUAGE_OPTIONS = SUPPORTED_LANGUAGES;
+const TOPBAR_MAX_WIDTH = "max-w-[1440px]";
 
 export function TopBar() {
-  const [language, setLanguage] = useState<LanguageCode>("TH");
+  const { language, setLanguage } = useLanguageContext();
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem("app_language");
-    if (stored === "TH" || stored === "EN") {
-      setLanguage(stored);
-      return;
-    }
-    const browserLanguage = window.navigator.language.toLowerCase();
-    if (browserLanguage.startsWith("en")) {
-      setLanguage("EN");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.localStorage.setItem("app_language", language);
-  }, [language]);
-
-  const copy = COPY[language];
+  const copy = getTopBarCopy(language);
 
   const handleLanguageSelect = (code: LanguageCode) => {
     setLanguage(code);
@@ -66,7 +21,7 @@ export function TopBar() {
 
   return (
     <header className="sticky top-0 z-20 w-full border-b border-neutral-200 bg-white shadow-[0_6px_18px_rgba(0,0,0,0.08)]">
-      <div className="mx-auto flex h-24 w-full max-w-6xl items-center px-6">
+      <div className={`mx-auto flex h-24 w-full items-center px-6 ${TOPBAR_MAX_WIDTH}`}>
         <BrandMark />
         <div className="ml-auto flex items-center gap-5">
           <AuthCta label={copy.loginCta} keyAlt={copy.keyAlt} />
@@ -97,7 +52,7 @@ function BrandMark() {
     <Link href="/" className="flex h-30 w-30 mt-2 items-center justify-center">
       <Image
         src="/images/Logo.png"
-        alt="โลโก้ Tetris Pizza"
+        alt="????? Tetris Pizza"
         width={120}
         height={120}
         className="h-30 w-30 object-contain"
@@ -176,8 +131,10 @@ function LanguageModal({ language, title, description, onClose, onSelect }: Lang
   const closeTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    const id = requestAnimationFrame(() => setVisible(true));
-    return () => cancelAnimationFrame(id);
+    const timer = window.setTimeout(() => setVisible(true), 12);
+    return () => {
+      window.clearTimeout(timer);
+    };
   }, []);
 
   const beginDismiss = useCallback(() => {
@@ -185,9 +142,7 @@ function LanguageModal({ language, title, description, onClose, onSelect }: Lang
     if (closeTimerRef.current !== null) {
       window.clearTimeout(closeTimerRef.current);
     }
-    closeTimerRef.current = window.setTimeout(() => {
-      onClose();
-    }, 200);
+    closeTimerRef.current = window.setTimeout(onClose, 180);
   }, [onClose]);
 
   useEffect(() => {
@@ -315,7 +270,7 @@ function KeyIcon({ className, alt }: KeyIconProps) {
   return (
     <Image
       src="/images/LoginKey.png"
-      alt={alt ?? "ไอคอนกุญแจ"}
+      alt={alt ?? "??????????"}
       width={20}
       height={20}
       className={className ? `${className} object-contain` : "h-5 w-5 object-contain"}

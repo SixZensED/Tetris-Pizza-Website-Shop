@@ -1,0 +1,76 @@
+{
+  "TH": {
+    "topbar": {
+      "loginCta": "เข้าสู่ระบบ / สมัครสมาชิก",
+      "keyAlt": "ไอคอนกุญแจ",
+      "languageSelectorLabel": "เลือกภาษา",
+      "globeAlt": "ไอคอนโลก",
+      "languageModalTitle": "เลือกภาษาของคุณ",
+      "languageModalDescription": "สลับภาษาให้ตรงกับความชอบของคุณ"
+    },
+    "orderType": {
+      "heading": "เลือกประเภทการสั่งซื้อ",
+      "options": {
+        "delivery": "ส่งถึงบ้าน",
+        "pickup": "รับที่ร้าน"
+      }
+    },
+    "banner": {
+      "emptyTitle": "ไม่พบภาพแบนเนอร์",
+      "emptySubtitle": "เพิ่มแบนเนอร์เพื่อแสดงโปรโมชั่น",
+      "previousLabel": "ก่อนหน้า",
+      "nextLabel": "ถัดไป"
+    },
+    "foodCategories": {
+      "heading": "หมวดหมู่อาหาร",
+      "items": {
+        "promotion": "โปรโมชั่น",
+        "pizza": "พิซซ่า",
+        "combo": "คอมโบ",
+        "chicken": "ไก่",
+        "drinks": "เครื่องดื่ม"
+      }
+    },
+    "promotionCategories": {
+      "heading": "โปรโมชั่น",
+      "viewAllLabel": "ดูทั้งหมด"
+    }
+  },
+  "EN": {
+    "topbar": {
+      "loginCta": "Log in / Sign up",
+      "keyAlt": "Key icon",
+      "languageSelectorLabel": "Choose language",
+      "globeAlt": "Globe icon",
+      "languageModalTitle": "Choose your language",
+      "languageModalDescription": "Switch languages to match your preference."
+    },
+    "orderType": {
+      "heading": "Choose your order type",
+      "options": {
+        "delivery": "Delivery",
+        "pickup": "Pick up in store"
+      }
+    },
+    "banner": {
+      "emptyTitle": "No banner image found",
+      "emptySubtitle": "Add banners to showcase promotions.",
+      "previousLabel": "Previous",
+      "nextLabel": "Next"
+    },
+    "foodCategories": {
+      "heading": "Food categories",
+      "items": {
+        "promotion": "Promotions",
+        "pizza": "Pizza",
+        "combo": "Combos",
+        "chicken": "Chicken",
+        "drinks": "Drinks"
+      }
+    },
+    "promotionCategories": {
+      "heading": "Promotions",
+      "viewAllLabel": "View all"
+    }
+  }
+}
