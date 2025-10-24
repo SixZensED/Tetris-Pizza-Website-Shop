@@ -2,11 +2,12 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { BANNERS, type Banner } from "../data/banners";
-import { useLanguageContext } from "../contexts/language-context";
-import { getBannerCopy } from "../lib/translations";
+import { BANNERS, type Banner } from "../../data/banners";
+import { useLanguageContext } from "../../contexts/language-context";
+import { getBannerCopy } from "../../lib/translations";
 
-const MIN_HEIGHT_CLASSES = "min-h-[120px] sm:min-h-[160px] md:min-h-[200px] lg:min-h-[240px]";
+const MIN_HEIGHT_CLASSES =
+  "min-h-[120px] sm:min-h-[160px] md:min-h-[200px] lg:min-h-[240px]";
 const AUTO_ADVANCE_DELAY = 6500;
 const BASE_WIDTH = 1440;
 const BASE_HEIGHT = 360;
@@ -16,7 +17,10 @@ export function BannerCarousel() {
   const { language } = useLanguageContext();
   const copy = getBannerCopy(language);
 
-  const slides = useMemo(() => BANNERS.filter((banner) => Boolean(banner.image)), []);
+  const slides = useMemo(
+    () => BANNERS.filter((banner) => Boolean(banner.image)),
+    [],
+  );
   const slideCount = slides.length;
   const hasMultipleSlides = slideCount > 1;
 
@@ -51,7 +55,9 @@ export function BannerCarousel() {
     return (
       <section className="mt-10">
         <div className="mx-auto flex h-56 w-full max-w-6xl flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 bg-white text-center shadow-[0_16px_40px_rgba(0,0,0,0.06)]">
-          <h3 className="text-base font-semibold text-neutral-700">{copy.emptyTitle}</h3>
+          <h3 className="text-base font-semibold text-neutral-700">
+            {copy.emptyTitle}
+          </h3>
           <p className="mt-2 text-sm text-neutral-500">{copy.emptySubtitle}</p>
         </div>
       </section>
@@ -60,7 +66,9 @@ export function BannerCarousel() {
 
   return (
     <section className="mt-10">
-      <div className={`relative mx-auto w-full ${CAROUSEL_MAX_WIDTH_CLASS}`}>
+      <div
+        className={`relative mx-auto w-full ${CAROUSEL_MAX_WIDTH_CLASS} px-6`}
+      >
         <div
           className={`relative w-full overflow-hidden rounded-[32px] shadow-[0_24px_60px_rgba(0,0,0,0.18)] ${MIN_HEIGHT_CLASSES}`}
           style={{ aspectRatio: `${BASE_WIDTH}/${BASE_HEIGHT}` }}
@@ -72,14 +80,26 @@ export function BannerCarousel() {
             style={{ transform: `translateX(-${activeIndex * 100}%)` }}
           >
             {slides.map((slide, index) => (
-              <CarouselSlide key={slide.id} slide={slide} isInitial={index === 0} />
+              <CarouselSlide
+                key={slide.id}
+                slide={slide}
+                isInitial={index === 0}
+              />
             ))}
           </div>
 
           {hasMultipleSlides ? (
             <>
-              <CarouselArrow direction="prev" label={copy.previousLabel} onClick={handlePrev} />
-              <CarouselArrow direction="next" label={copy.nextLabel} onClick={handleNext} />
+              <CarouselArrow
+                direction="prev"
+                label={copy.previousLabel}
+                onClick={handlePrev}
+              />
+              <CarouselArrow
+                direction="next"
+                label={copy.nextLabel}
+                onClick={handleNext}
+              />
             </>
           ) : null}
 
@@ -95,7 +115,9 @@ export function BannerCarousel() {
                     aria-label={`Go to banner ${index + 1}`}
                     aria-pressed={isActive}
                     className={`h-1 rounded-full transition-all duration-200 ${
-                      isActive ? "w-8 bg-white" : "w-4 bg-white/40 hover:bg-white/70"
+                      isActive
+                        ? "w-8 bg-white"
+                        : "w-4 bg-white/40 hover:bg-white/70"
                     }`}
                   />
                 );
@@ -148,7 +170,10 @@ function CarouselSlide({ slide, isInitial }: CarouselSlideProps) {
   const { image, alt, fit = "contain" } = slide;
 
   return (
-    <div className={`relative w-full flex-shrink-0 overflow-hidden ${MIN_HEIGHT_CLASSES}`} style={{ aspectRatio: `${BASE_WIDTH}/${BASE_HEIGHT}` }}>
+    <div
+      className={`relative w-full flex-shrink-0 overflow-hidden ${MIN_HEIGHT_CLASSES}`}
+      style={{ aspectRatio: `${BASE_WIDTH}/${BASE_HEIGHT}` }}
+    >
       {image ? (
         <Image
           src={image}

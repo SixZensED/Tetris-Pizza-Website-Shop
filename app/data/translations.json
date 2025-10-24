@@ -6,7 +6,13 @@
       "languageSelectorLabel": "เลือกภาษา",
       "globeAlt": "ไอคอนโลก",
       "languageModalTitle": "เลือกภาษาของคุณ",
-      "languageModalDescription": "สลับภาษาให้ตรงกับความชอบของคุณ"
+      "languageModalDescription": "สลับภาษาให้ตรงกับความชอบของคุณ",
+      "profileMenuLabel": "เปิดเมนูผู้ใช้",
+      "profileFallbackName": "ผู้ใช้",
+      "logoutLabel": "ออกจากระบบ",
+      "viewProfileLabel": "ดูโปรไฟล์",
+      "accountSettingsLabel": "ตั้งค่าบัญชี",
+      "coinsLabel": "ยอดเงิน"
     },
     "orderType": {
       "heading": "เลือกประเภทการสั่งซื้อ",
@@ -38,12 +44,18 @@
   },
   "EN": {
     "topbar": {
-      "loginCta": "Log in / Sign up",
+      "loginCta": "Sign in / Sign up",
       "keyAlt": "Key icon",
       "languageSelectorLabel": "Choose language",
       "globeAlt": "Globe icon",
       "languageModalTitle": "Choose your language",
-      "languageModalDescription": "Switch languages to match your preference."
+      "languageModalDescription": "Switch languages to match your preference.",
+      "profileMenuLabel": "Open user menu",
+      "profileFallbackName": "Guest",
+      "logoutLabel": "Sign out",
+      "viewProfileLabel": "View profile",
+      "accountSettingsLabel": "Account settings",
+      "coinsLabel": "Balance"
     },
     "orderType": {
       "heading": "Choose your order type",

@@ -11,6 +11,12 @@ type TranslationBundle = {
     globeAlt: string;
     languageModalTitle: string;
     languageModalDescription: string;
+    profileMenuLabel: string;
+    profileFallbackName: string;
+    logoutLabel: string;
+    viewProfileLabel: string;
+    coinsLabel: string;
+    accountSettingsLabel: string;
   };
   orderType: {
     heading: string;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useLanguageContext } from "../contexts/language-context";
-import { getOrderTypeCopy } from "../lib/translations";
+import { useLanguageContext } from "../../contexts/language-context";
+import { getOrderTypeCopy } from "../../lib/translations";
 
 type OrderType = "delivery" | "pickup";
 
@@ -18,10 +18,12 @@ export function OrderTypeSection() {
 
   return (
     <section className="mt-[-12px]">
-      <div className="-mx-6 bg-[#ededed]">
+      <div className=" bg-[#ededed]">
         <div className={`mx-auto w-full ${SECTION_MAX_WIDTH} px-6 py-10`}>
           <div className="flex w-full flex-col items-start text-left">
-            <h2 className="text-xl font-bold tracking-tight text-[#515151]">{orderCopy.heading}</h2>
+            <h2 className="text-xl font-bold tracking-tight text-[#515151]">
+              {orderCopy.heading}
+            </h2>
             <div className="mt-6 inline-flex items-center justify-center rounded-[18px] border border-[#d0d0d0] bg-white p-1 shadow-[0_4px_12px_rgba(0,0,0,0.12)]">
               <div className="relative inline-flex min-w-[296px] overflow-hidden rounded-[14px]">
                 <span
