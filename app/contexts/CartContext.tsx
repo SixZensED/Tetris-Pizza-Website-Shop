@@ -6,12 +6,10 @@ import React, {
   useEffect,
   useCallback,
   useContext,
+  useMemo,
   type ReactNode,
 } from "react";
-import { getTopBarCopy, TopBarCopy, LanguageCode } from "../lib/translations"; // Import TopBarCopy and LanguageCode from translations
-
-// --- Interfaces ---
-// Removed duplicate TopBarCopy interface as it's now imported from translations.ts
+import { getTopBarCopy, type TopBarCopy, type LanguageCode } from "../lib/translations";
 
 interface CurrentUser {
   id: string;
@@ -20,7 +18,7 @@ interface CurrentUser {
   name: string;
   email: string;
   avatar?: string;
-  balance: string; // Balance is stored as a string from API
+  balance: string;
 }
 
 interface CartItemOption {
