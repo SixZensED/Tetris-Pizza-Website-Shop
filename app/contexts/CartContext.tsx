@@ -10,6 +10,7 @@ import React, {
   type ReactNode,
 } from "react";
 import { getTopBarCopy, type TopBarCopy, type LanguageCode } from "../lib/translations";
+import { useLanguageContext } from "./language-context";
 
 interface CurrentUser {
   id: string;
@@ -102,8 +103,7 @@ export interface CartContextType {
   purchaseSuccessMessage: string;
   closePurchaseSuccessModal: () => void;
 
-  currentLanguage: LanguageCode; // Use imported LanguageCode
-  setLanguage: (lang: LanguageCode) => void; // Use imported LanguageCode
+  currentLanguage: LanguageCode; // From LanguageContext
   copy: TopBarCopy; // Use imported TopBarCopy
 }
 
@@ -127,9 +127,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [balance, setBalance] = useState<string | null>(null); // State for balance in CartContext
 
-  // Language state
-  const [currentLanguage, setCurrentLanguage] = useState<LanguageCode>("en"); // Default language
-  const copy: TopBarCopy = getTopBarCopy(currentLanguage); // Directly assign the result to copy with TopBarCopy type
+  // Get language from LanguageContext
+  const { language: currentLanguage, copy } = useLanguageContext();
 
   // Global purchase confirmation modal states
   const [showPurchaseConfirmModal, setShowPurchaseConfirmModal] =
@@ -681,7 +680,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         purchaseSuccessMessage,
         closePurchaseSuccessModal,
         currentLanguage,
-        setLanguage: setCurrentLanguage,
         copy,
       }}
     >

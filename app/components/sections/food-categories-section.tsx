@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useLanguageContext } from "@/app/contexts/language-context";
+import { getFoodCategoriesCopy } from "@/app/lib/translations";
 
 const SECTION_MAX_WIDTH = "max-w-[1440px]";
 
@@ -12,12 +14,15 @@ interface Category {
   position: number;
 }
 
+type FoodCategoryKey = keyof ReturnType<typeof getFoodCategoriesCopy>['items'];
+
 export function FoodCategoriesSection({
   activeCategory,
 }: {
   activeCategory?: string;
 }) {
   const [categories, setCategories] = useState<Category[]>([]);
+  const { language } = useLanguageContext();
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -57,18 +62,20 @@ export function FoodCategoriesSection({
   return (
     <section className="mt-12">
       <div className={`mx-auto w-full ${SECTION_MAX_WIDTH} px-6`}>
-        <header className="flex items-center gap-3">
-          <FoodCategoriesIcon className="h-8 w-8 text-[#b21807]" />
-          <h2 className="text-lg font-bold tracking-tight text-[#515151]">
-            หมวดหมู่อาหาร
-          </h2>
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <FoodCategoriesIcon className="h-8 w-8 text-[#b21807]" />
+            <h2 className="text-lg font-bold tracking-tight text-[#515151]">
+              {getFoodCategoriesCopy(language).heading}
+            </h2>
+          </div>
         </header>
         <div className="mt-6 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div className="flex flex-nowrap gap-4">
             {categories.map((category) => (
               <CategoryCard
                 key={category.category_id}
-                label={category.name}
+                label={getFoodCategoriesCopy(language).items[category.name.toLowerCase() as keyof ReturnType<typeof getFoodCategoriesCopy>['items']] || category.name}
                 imageUrl={category.image_url}
                 href={`/order?category_id=${category.category_id}`}
                 isActive={activeCategory === category.category_id}

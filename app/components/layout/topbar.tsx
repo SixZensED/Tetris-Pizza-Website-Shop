@@ -3,29 +3,25 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useCart, CartContextType } from "../../contexts/CartContext";
+import { useCart } from "../../contexts/CartContext";
 import { getTopBarCopy } from "../../lib/translations";
+import { useLanguageContext } from "../../contexts/language-context";
+
+type TopBarCopy = ReturnType<typeof getTopBarCopy>;
 
 // Constants
 const LANGUAGE_OPTIONS = [
-  { value: "en", label: "EN" },
-  { value: "th", label: "TH" },
+  { value: "EN", label: "EN" },
+  { value: "TH", label: "TH" },
 ];
 const TOPBAR_MAX_WIDTH = "max-w-[1440px]";
 
 // --- Main TopBar Component ---
 export function TopBar() {
-  const {
-    currentUser,
-    balance,
-    logout,
-    openOrderHistorySidebar,
-    openCartSidebar,
-    copy, // Translations from CartContext
-    currentLanguage,
-    setLanguage,
-    cart,
-  } = useCart();
+  const { currentUser, balance, logout, openOrderHistorySidebar, openCartSidebar, cart } = useCart();
+  
+  const { language: currentLanguage, setLanguage } = useLanguageContext();
+  const copy = getTopBarCopy(currentLanguage);
 
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [languageModalOpen, setLanguageModalOpen] = useState(false);
@@ -115,10 +111,7 @@ export function TopBar() {
 
           {currentUser ? (
             <UserProfileMenu
-              currentUser={{
-                ...currentUser,
-                balance: balance?.toString() || "0.00",
-              }}
+              currentUser={currentUser}
               isOpen={profileMenuOpen}
               onToggle={toggleProfileMenu}
               onLogout={handleLogout}
@@ -133,7 +126,7 @@ export function TopBar() {
           <LanguageTrigger
             currentLanguage={currentLanguage}
             onClick={toggleLanguageModal}
-            copy={copy} // Pass copy object
+            copy={copy}
             isOpen={languageModalOpen}
           />
         </div>
@@ -172,7 +165,7 @@ function BrandMark() {
 }
 
 interface AuthCtaProps {
-  copy: CartContextType["copy"];
+  copy: TopBarCopy;
 }
 
 function AuthCta({ copy }: AuthCtaProps) {
@@ -188,13 +181,20 @@ function AuthCta({ copy }: AuthCtaProps) {
 }
 
 interface UserProfileMenuProps {
-  currentUser: NonNullable<CartContextType["currentUser"]>; // Ensure currentUser is not null
+  currentUser: {
+    id: string;
+    name: string;
+    email?: string;
+    avatar?: string;
+    isAdmin?: boolean;
+    balance?: string | number | null;
+  };
   isOpen: boolean;
   onToggle: () => void;
   onLogout: () => void;
-  closeMenu: () => void; // Added closeMenu prop for explicit menu closing
-  copy: CartContextType["copy"];
-  containerRef: React.RefObject<HTMLDivElement | null>; // Allow null for ref
+  closeMenu: () => void;
+  copy: TopBarCopy;
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 function UserProfileMenu({
@@ -265,7 +265,7 @@ function UserProfileMenu({
               </p>
             )}
             <div className="mt-1 flex items-center justify-between">
-              <span className="text-xs text-neutral-500">ยอดเงิน:</span>
+              <span className="text-xs text-neutral-500">{copy.coinsLabel}</span>
               <span className="text-sm font-semibold text-yellow-600">
                 ฿{new Intl.NumberFormat('th-TH', {
                   minimumFractionDigits: 2,
@@ -315,7 +315,7 @@ function UserProfileMenu({
                     clipRule="evenodd"
                   />
                 </svg>
-                จัดการหลังบ้าน
+                {copy.adminLabel}
               </Link>
             )}
 
@@ -348,7 +348,7 @@ function UserProfileMenu({
 interface LanguageTriggerProps {
   currentLanguage: string;
   onClick: () => void;
-  copy: CartContextType["copy"];
+  copy: TopBarCopy;
   isOpen: boolean;
 }
 

@@ -12,7 +12,8 @@
       "logoutLabel": "ออกจากระบบ",
       "viewProfileLabel": "ดูโปรไฟล์",
       "accountSettingsLabel": "ตั้งค่าบัญชี",
-      "coinsLabel": "ยอดเงิน"
+      "coinsLabel": "ยอดเงิน",
+      "adminLabel": "จัดการหลังบ้าน"
     },
     "orderType": {
       "heading": "เลือกประเภทการสั่งซื้อ",
@@ -40,6 +41,50 @@
     "promotionCategories": {
       "heading": "โปรโมชั่น",
       "viewAllLabel": "ดูทั้งหมด"
+    },
+    "CartSidebar": {
+      "yourCart": "ตะกร้าของคุณ",
+      "total": "รวม",
+      "checkout": "ชำระเงิน",
+      "emptyCart": "ไม่มีสินค้าในตะกร้า",
+      "loading": "กำลังโหลด...",
+      "remove": "ลบ",
+      "close": "ปิด",
+      "confirmRemove": "ยืนยันการลบ",
+      "confirmRemoveText": "คุณแน่ใจหรือไม่ที่ต้องการลบสินค้านี้จากตะกร้า?",
+      "confirmPurchase": "ยืนยันการชำระเงิน",
+      "confirmPurchaseText": "คุณแน่ใจหรือไม่ที่ต้องการชำระเงินจำนวน {amount} บาท?",
+      "insufficientBalance": "ยอดเงินในบัญชีไม่เพียงพอ",
+      "processingPayment": "กำลังดำเนินการชำระเงิน...",
+      "paymentSuccess": "ชำระเงินสำเร็จ",
+      "paymentFailed": "การชำระเงินไม่สำเร็จ",
+      "yes": "ใช่",
+      "no": "ไม่",
+      "yourBalance": "ยอดเงินคงเหลือ"
+    },
+    "OrderHistorySidebar": {
+      "title": "ประวัติการสั่งซื้อ",
+      "closeAriaLabel": "ปิดประวัติการสั่งซื้อ",
+      "loading": "กำลังโหลด...",
+      "noOrders": "ไม่พบประวัติการสั่งซื้อ",
+      "tryOrdering": "ลองสั่งอาหารอร่อยๆ ได้เลย!",
+      "orderId": "คำสั่งซื้อที่",
+      "orderDate": "เมื่อวันที่",
+      "totalPrice": "ราคารวม",
+      "paymentMethod": "วิธีการชำระเงิน",
+      "items": "รายการสินค้า",
+      "quantity": "จำนวน",
+      "noImage": "ไม่มีรูปภาพ",
+      "status": {
+        "pending_delivery": "รอดำเนินการ",
+        "completed": "จัดส่งสำเร็จ",
+        "cancelled": "ยกเลิกแล้ว"
+      },
+      "error": {
+        "loginRequired": "กรุณาเข้าสู่ระบบเพื่อดูประวัติการสั่งซื้อ",
+        "authError": "ไม่พบข้อมูลการยืนยันตัวตน กรุณาเข้าสู่ระบบใหม่",
+        "loadError": "เกิดข้อผิดพลาดในการโหลดประวัติการสั่งซื้อ"
+      }
     }
   },
   "EN": {
@@ -55,7 +100,8 @@
       "logoutLabel": "Sign out",
       "viewProfileLabel": "View profile",
       "accountSettingsLabel": "Account settings",
-      "coinsLabel": "Balance"
+      "coinsLabel": "Balance",
+      "adminLabel": "Admin settings"
     },
     "orderType": {
       "heading": "Choose your order type",
@@ -83,6 +129,50 @@
     "promotionCategories": {
       "heading": "Promotions",
       "viewAllLabel": "View all"
+    },
+    "CartSidebar": {
+      "yourCart": "Your Cart",
+      "total": "Total",
+      "checkout": "Checkout",
+      "emptyCart": "Your cart is empty",
+      "loading": "Loading...",
+      "remove": "Remove",
+      "close": "Close",
+      "confirmRemove": "Confirm Removal",
+      "confirmRemoveText": "Are you sure you want to remove this item from your cart?",
+      "confirmPurchase": "Confirm Payment",
+      "confirmPurchaseText": "Are you sure you want to proceed with the payment of {amount} THB?",
+      "insufficientBalance": "Insufficient balance",
+      "processingPayment": "Processing payment...",
+      "paymentSuccess": "Payment successful",
+      "paymentFailed": "Payment failed",
+      "yes": "Yes",
+      "no": "No",
+      "yourBalance": "Your balance"
+    },
+    "OrderHistorySidebar": {
+      "title": "Order History",
+      "closeAriaLabel": "Close order history",
+      "loading": "Loading...",
+      "noOrders": "No order history found",
+      "tryOrdering": "Try ordering some delicious food!",
+      "orderId": "Order ID",
+      "orderDate": "Order Date",
+      "totalPrice": "Total Price",
+      "paymentMethod": "Payment Method",
+      "items": "Items",
+      "quantity": "Qty",
+      "noImage": "No image",
+      "status": {
+        "pending_delivery": "Pending Delivery",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "error": {
+        "loginRequired": "Please sign in to view your order history",
+        "authError": "Authentication error. Please sign in again.",
+        "loadError": "Failed to load order history"
+      }
     }
   }
 }

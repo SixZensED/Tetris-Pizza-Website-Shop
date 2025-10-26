@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react";
 import ConfirmModal from "./confirm-modal";
 import SuccessModal from "./success-modal";
 import { useCart } from "@/app/contexts/CartContext";
+import { useLanguageContext } from "@/app/contexts/language-context";
+import { getTopBarCopy, getCartSidebarCopy } from "@/app/lib/translations";
 
 // --- Type Definitions ---
 interface CurrentUser {
@@ -22,15 +24,21 @@ export function CartSidebar() {
 
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const { language: currentLanguage } = useLanguageContext();
+  const copy = getTopBarCopy(currentLanguage);
+  const cartCopy = getCartSidebarCopy(currentLanguage);
+  
+  // Use cartCopy directly for translations
+
   const {
     cart,
     fetchCart,
     removeFromCart,
-    openPurchaseConfirmModal, // New: from CartContext
-    currentUser, // New: from CartContext
-    balance, // New: from CartContext
-    isLoading, // New: from CartContext
-    openRemoveConfirmModal, // New: from CartContext
+    openPurchaseConfirmModal,
+    currentUser,
+    balance,
+    isLoading,
+    openRemoveConfirmModal,
   } = useCart();
 
   const API_URL =
@@ -92,15 +100,15 @@ export function CartSidebar() {
 
   const handlePurchase = () => {
     if (!API_URL || !currentUser || !cart || cart.items.length === 0) {
-      setPaymentError("Cannot process purchase. Missing information.");
+      setPaymentError(cartCopy.paymentFailed);
       return;
     }
     if (balance === null || balance < cart.total_price) {
-      setPaymentError("ยอดเงินของคุณไม่พอสำหรับการสั่งซื้อนี้");
+      setPaymentError(cartCopy.insufficientBalance);
       return;
     }
-    setPaymentError(null); // Clear previous errors
-    setPaymentStatus(null); // Clear previous status
+    setPaymentError(null);
+    setPaymentStatus('processing');
     openPurchaseConfirmModal(cart.total_price, currentUser.id, balance);
   };
 
@@ -122,13 +130,11 @@ export function CartSidebar() {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b">
-            <h2 className="text-xl font-semibold text-gray-800">
-              ตะกร้าสินค้า
-            </h2>
+            <h2 className="text-lg text-[#000000] font-semibold">{cartCopy.yourCart || 'Your Cart'}</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition-colors"
-              aria-label="Close cart"
+              aria-label={cartCopy.close}
             >
               <svg
                 className="h-6 w-6"
@@ -148,7 +154,7 @@ export function CartSidebar() {
 
           {/* Body */}
           <div className="flex-1 p-4 overflow-y-auto">
-            {loading && <p className="text-center text-gray-500">Loading...</p>}
+            {loading && <p className="text-center text-gray-500">{cartCopy.loading || 'Loading...'}</p>}
             {error && !loading && (
               <div className="p-4 bg-red-50 text-red-700 rounded-lg text-center">
                 {error}
@@ -159,7 +165,7 @@ export function CartSidebar() {
               <>
                 {!cart || cart.items.length === 0 ? (
                   <div className="text-center text-gray-500 pt-10">
-                    Your cart is empty.
+                    {cartCopy.emptyCart || 'Your cart is empty'}
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -299,7 +305,7 @@ export function CartSidebar() {
               <div className="p-4 border-t bg-gray-50">
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between text-sm text-gray-600">
-                    <span>ยอดเงินคงเหลือ:</span>
+                    <span>{cartCopy.yourBalance || 'Your Balance'}</span>
                     <span className="font-semibold text-yellow-600">
                       {balance?.toLocaleString("th-TH", {
                         minimumFractionDigits: 2,
@@ -308,8 +314,11 @@ export function CartSidebar() {
                     </span>
                   </div>
                   <div className="flex justify-between font-semibold text-gray-800">
-                    <span>ราคารวม</span>
-                    <span>฿{cart.total_price.toFixed(2)}</span>
+                    <span>{cartCopy.total}</span>
+                    <span>฿{cart.total_price.toLocaleString('th-TH', {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2
+                    })}</span>
                   </div>
                 </div>
 
@@ -328,12 +337,16 @@ export function CartSidebar() {
                   }
                   className="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
-                  {isLoading ? "Processing..." : "ชำระเงิน"}
+                  {isLoading ? cartCopy.processingPayment : cartCopy.checkout}
                 </button>
 
                 {paymentStatus && (
                   <div className="mt-3 p-2 text-sm bg-green-100 text-green-800 rounded text-center">
-                    {paymentStatus}
+                    {paymentStatus === 'success' 
+                      ? cartCopy.paymentSuccess 
+                      : paymentStatus === 'processing' 
+                        ? cartCopy.processingPayment 
+                        : paymentStatus}
                   </div>
                 )}
                 {paymentError && (

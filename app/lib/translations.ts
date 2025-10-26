@@ -17,6 +17,7 @@ type TranslationBundle = {
     viewProfileLabel: string;
     coinsLabel: string;
     accountSettingsLabel: string;
+    adminLabel: string;
   };
   orderType: {
     heading: string;
@@ -36,6 +37,50 @@ type TranslationBundle = {
     heading: string;
     viewAllLabel: string;
   };
+  CartSidebar: {
+    yourCart: string;
+    total: string;
+    checkout: string;
+    emptyCart: string;
+    loading: string;
+    remove: string;
+    close: string;
+    confirmRemove: string;
+    confirmRemoveText: string;
+    confirmPurchase: string;
+    confirmPurchaseText: string;
+    insufficientBalance: string;
+    processingPayment: string;
+    paymentSuccess: string;
+    paymentFailed: string;
+    yes: string;
+    no: string;
+    yourBalance: string;
+  };
+  OrderHistorySidebar: {
+    title: string;
+    closeAriaLabel: string;
+    loading: string;
+    noOrders: string;
+    tryOrdering: string;
+    orderId: string;
+    orderDate: string;
+    totalPrice: string;
+    paymentMethod: string;
+    items: string;
+    quantity: string;
+    noImage: string;
+    status: {
+      pending_delivery: string;
+      completed: string;
+      cancelled: string;
+    };
+    error: {
+      loginRequired: string;
+      authError: string;
+      loadError: string;
+    };
+  };
 };
 
 const TRANSLATIONS = rawTranslations as Record<string, TranslationBundle>;
@@ -53,6 +98,8 @@ export type OrderTypeCopy = TranslationBundle["orderType"];
 export type BannerCopy = TranslationBundle["banner"];
 export type FoodCategoriesCopy = TranslationBundle["foodCategories"];
 export type PromotionCategoriesCopy = TranslationBundle["promotionCategories"];
+export type CartSidebarCopy = TranslationBundle["CartSidebar"];
+export type OrderHistorySidebarCopy = TranslationBundle["OrderHistorySidebar"];
 
 export function isSupportedLanguage(code: string): code is LanguageCode {
   return SUPPORTED_LANGUAGES.includes(code as LanguageCode);
@@ -83,4 +130,12 @@ export function getFoodCategoriesCopy(language: LanguageCode): FoodCategoriesCop
 
 export function getPromotionCategoriesCopy(language: LanguageCode): PromotionCategoriesCopy {
   return getTranslations(language).promotionCategories;
+}
+
+export function getCartSidebarCopy(language: LanguageCode): CartSidebarCopy {
+  return getTranslations(language).CartSidebar;
+}
+
+export function getOrderHistoryCopy(language: LanguageCode): OrderHistorySidebarCopy {
+  return getTranslations(language).OrderHistorySidebar;
 }
