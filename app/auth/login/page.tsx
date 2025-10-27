@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import SuccessModal from "../../components/modals/success/success-modal";
 import ErrorModal from "../../components/modals/error/error-modal";
 import { useRouter } from "next/navigation";
+import { setAuth, getAuthInfo } from "@/app/lib/auth";
+import { useAuthContext } from "@/app/contexts/AuthContext";
 
 export default function LoginPage() {
   const [mode, setMode] = useState<"phone" | "email">("email");
@@ -22,6 +24,7 @@ export default function LoginPage() {
   const [showPhoneAuthModal, setShowPhoneAuthModal] = useState(false);
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   const router = useRouter();
+  const { login } = useAuthContext();
   // Format Thai mobile number (3-3-4)
   const formatThaiPhone = (digits: string) => {
     const d = digits.slice(0, 10);
@@ -125,24 +128,21 @@ export default function LoginPage() {
             : data && typeof data.accessToken === "string"
               ? (data.accessToken as string)
               : null;
+              
         if (token) {
-          localStorage.setItem("token", token);
-          window.dispatchEvent(new StorageEvent("storage", { key: "token" }));
-        }
+          // 1. Set the token which also sets the user_id
+          setAuth(token);
 
-        const userId =
-          data && typeof data.user_id === "string"
-            ? (data.user_id as string)
-            : data && typeof data.user_id === "number"
-              ? (data.user_id as number).toString()
-              : data && typeof data.id === "string"
-                ? (data.id as string)
-                : data && typeof data.id === "number"
-                  ? (data.id as number).toString()
-                  : null;
-        if (userId) {
-          localStorage.setItem("user_id", userId);
-          window.dispatchEvent(new StorageEvent("storage", { key: "user_id" }));
+          // 2. Call the login function from context, which will fetch the user
+          login(token).then(() => {
+            // 3. Show success and redirect
+            setSuccess(true);
+            setTimeout(() => {
+              router.push('/');
+            }, 1000);
+          });
+
+          return;
         }
 
         const rawFullName =
@@ -154,42 +154,29 @@ export default function LoginPage() {
         const resolvedName =
           rawFullName.trim().length > 0 ? rawFullName.trim() : fallbackName;
 
-        localStorage.setItem("demo_user_name", resolvedName);
-        window.dispatchEvent(
-          new StorageEvent("storage", { key: "demo_user_name" }),
-        );
-
-        const emailFromResponse =
-          data &&
-          typeof data.email === "string" &&
-          (data.email as string).trim().length > 0
-            ? (data.email as string).trim()
-            : identifier;
-        const pointsFromResponse =
-          data && typeof data.points === "number"
-            ? (data.points as number)
-            : data && typeof data.points === "string"
-              ? Number(data.points)
-              : 0;
-        const safePoints = Number.isFinite(pointsFromResponse)
-          ? pointsFromResponse
-          : 0;
-        localStorage.setItem(
-          "demo_user",
-          JSON.stringify({
-            fullName: resolvedName,
-            email: emailFromResponse,
-            points: safePoints,
-          }),
-        );
-        window.dispatchEvent(new StorageEvent("storage", { key: "demo_user" }));
+        // Store additional user info
+        const userInfo = {
+          fullName: resolvedName,
+          email: data?.email || identifier,
+          points: 0
+        };
+        
+        if (data?.points) {
+          const points = typeof data.points === 'number' 
+            ? data.points 
+            : Number(data.points) || 0;
+          userInfo.points = Number.isFinite(points) ? points : 0;
+        }
+        
+        localStorage.setItem('user_info', JSON.stringify(userInfo));
       } catch {}
 
-      setSuccess(true);
+      // Reset form
       setValue("");
       setPassword("");
       setTouched(false);
       setTouchedPwd(false);
+      setSuccess(true);
     } catch (error) {
       const message =
         error instanceof Error

@@ -11,6 +11,7 @@ export default function SuccessModal({
   open,
   onClose,
   type = "register",
+  variant = "success",
   title,
   subtitle,
   primaryHref,
@@ -27,6 +28,7 @@ export default function SuccessModal({
   primaryText?: string;
   onPrimaryAction?: () => void;
   autoRedirectDelay?: number;
+  variant?: 'success' | 'error';
 }) {
   const router = useRouter();
 
@@ -139,12 +141,16 @@ export default function SuccessModal({
                           fill="#555555"
                           d="m24 4l5.253 3.832l6.503-.012l1.997 6.188l5.268 3.812L41 24l2.021 6.18l-5.268 3.812l-1.997 6.188l-6.503-.012L24 44l-5.253-3.832l-6.503.012l-1.997-6.188l-5.268-3.812L7 24l-2.021-6.18l5.268-3.812l1.997-6.188l6.503.012z"
                         />
-                        <path d="m17 24l5 5l10-10" />
+                        {variant === 'error' ? (
+                          <path d="m16 16l16 16m0-16L16 32" />
+                        ) : (
+                          <path d="m17 24l5 5l10-10" />
+                        )}
                       </g>
                     </mask>
                   </defs>
                   <path
-                    fill="#16a34a"
+                    fill={variant === 'error' ? '#dc2626' : '#16a34a'}
                     d="M0 0h48v48H0z"
                     mask="url(#SVG4IxzvcIZ)"
                   />
@@ -166,7 +172,7 @@ export default function SuccessModal({
                 {onPrimaryAction ? (
                   <button
                     type="button"
-                    className="block w-full rounded-lg bg-[#b21807] px-5 py-3 font-medium text-white transition hover:bg-[#9c1506] focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                    className={`block w-full rounded-lg px-5 py-3 font-medium text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${variant === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-[#b21807] hover:bg-[#9c1506] focus:ring-red-400'}`}
                     onClick={handlePrimaryClick}
                   >
                     {primaryText || defaultPrimaryText}
@@ -174,7 +180,7 @@ export default function SuccessModal({
                 ) : (
                   <Link
                     href={primaryHref || defaultHref}
-                    className="block w-full rounded-lg bg-[#b21807] px-5 py-3 font-medium text-white transition hover:bg-[#9c1506] focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                    className={`block w-full rounded-lg px-5 py-3 font-medium text-white transition focus:outline-none focus:ring-2 focus:ring-offset-2 ${variant === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-[#b21807] hover:bg-[#9c1506] focus:ring-red-400'}`}
                     onClick={handlePrimaryClick}
                   >
                     {primaryText || defaultPrimaryText}

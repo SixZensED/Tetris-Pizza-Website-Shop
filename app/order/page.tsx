@@ -43,7 +43,6 @@ function OrderPageContent() {
 
   return (
     <div className="flex flex-col min-h-screen bg-neutral-50">
-      <TopBar />
       <main className="flex-1 w-full pt-4 pb-16">
         <OrderTypeSection />
         <FoodCategoriesSection activeCategory={selectedCategoryId} />

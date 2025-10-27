@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguageContext } from "../../contexts/language-context";
 import { getOrderTypeCopy } from "../../lib/translations";
 
@@ -15,6 +15,56 @@ export function OrderTypeSection() {
   const [selection, setSelection] = useState<OrderType>("delivery");
   const orderCopy = getOrderTypeCopy(language);
   const activeIndex = Math.max(ORDER_TYPES.indexOf(selection), 0);
+
+  useEffect(() => {
+    const fetchOrderType = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const apiBaseUrl =
+            process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+          const response = await fetch(`${apiBaseUrl}/api/me`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.orderType) {
+              setSelection(data.orderType);
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data:", error);
+        }
+      }
+    };
+
+    fetchOrderType();
+  }, []);
+
+
+  const handleSelectionChange = async (newSelection: OrderType) => {
+    setSelection(newSelection);
+
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      try {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+        await fetch(`${apiBaseUrl}/api/me`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ orderType: newSelection }),
+        });
+      } catch (error) {
+        console.error("An error occurred while updating order type:", error);
+      }
+    }
+  };
 
   return (
     <section className="mt-[-12px]">
@@ -37,7 +87,7 @@ export function OrderTypeSection() {
                     <button
                       key={optionKey}
                       type="button"
-                      onClick={() => setSelection(optionKey)}
+                      onClick={() => handleSelectionChange(optionKey)}
                       className={`relative z-10 flex-1 min-w-[148px] px-6 py-2.5 text-center text-base font-semibold transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
                         isActive
                           ? "text-white focus-visible:outline-[#b21807]"

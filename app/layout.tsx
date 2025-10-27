@@ -6,6 +6,7 @@ import { Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { Providers } from "./providers";
+import ConditionalLayout from "./components/layout/ConditionalLayout";
 import { CartSidebar } from "./components/cart/CartSidebar";
 import { OrderHistorySidebar } from "./components/orders/OrderHistorySidebar";
 import GlobalPurchaseConfirmModal from "./components/modals/confirm/GlobalPurchaseConfirmModal";
@@ -38,7 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${lineSeedSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          {children}
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
           <CartSidebar />
           <OrderHistorySidebar />
           <GlobalPurchaseConfirmModal />

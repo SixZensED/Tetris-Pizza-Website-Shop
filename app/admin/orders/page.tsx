@@ -15,6 +15,7 @@ interface OrderItem {
   };
   product_name: string;
   product_image: string;
+  order_type: string;
 }
 
 type OrderStatus =
@@ -24,6 +25,14 @@ type OrderStatus =
   | "ready"
   | "completed"
   | "cancelled";
+
+interface PrimaryAddress {
+  address_line1: string | null;
+  sub_district: string | null;
+  city: string | null;
+  province: string | null;
+  postal_code: string | null;
+}
 
 interface Transaction {
   transaction_id: number;
@@ -39,6 +48,8 @@ interface Transaction {
   total_amount: string | null;
   order_status: OrderStatus | null; // Order status from API (e.g., pending_delivery, confirmed)
   items?: OrderItem[]; // Make items optional as it might not be present in all transaction types
+  order_type: string;
+  primary_address?: PrimaryAddress | null;
 }
 
 export default function OrdersPage() {
@@ -502,14 +513,36 @@ export default function OrdersPage() {
                               </p>
                               {transaction.order_status &&
                                 transaction.transaction_type === "purchase" && (
-                                  <p>
-                                    <span className="font-medium">
-                                      สถานะออเดอร์:
-                                    </span>{" "}
-                                    {getOrderStatusDisplayText(
-                                      transaction.order_status,
+                                  <>
+                                    <p>
+                                      <span className="font-medium">
+                                        สถานะออเดอร์:
+                                      </span>{" "}
+                                      {getOrderStatusDisplayText(
+                                        transaction.order_status,
+                                      )}
+                                    </p>
+                                    <p>
+                                      <span className="font-medium">
+                                        ประเภทออเดอร์:
+                                      </span>{" "}
+                                      {transaction.order_type}
+                                    </p>
+                                    {transaction.primary_address && (
+                                      <p>
+                                        <span className="font-medium">
+                                          ที่อยู่:
+                                        </span>{" "}
+                                        {[ 
+                                          transaction.primary_address.address_line1,
+                                          transaction.primary_address.sub_district,
+                                          transaction.primary_address.city,
+                                          transaction.primary_address.province,
+                                          transaction.primary_address.postal_code,
+                                        ].filter(Boolean).join(", ")}
+                                      </p>
                                     )}
-                                  </p>
+                                  </>
                                 )}
                             </div>
                             {transaction.items &&

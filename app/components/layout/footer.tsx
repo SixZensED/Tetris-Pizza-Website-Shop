@@ -5,7 +5,7 @@ const SECTION_MAX_WIDTH = "max-w-[1440px]";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Menu", href: "#menu" },
+  { label: "Orders", href: "/order" },
   { label: "About Us", href: "#about" },
   { label: "Privacy Policy", href: "#privacy" },
 ] as const;

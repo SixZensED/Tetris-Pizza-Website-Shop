@@ -2,12 +2,10 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { TopBar } from "./components/layout/topbar";
 import { OrderTypeSection } from "./components/sections/order-type-section";
 import { BannerCarousel } from "./components/sections/banner-carousel";
 import { FoodCategoriesSection } from "./components/sections/food-categories-section";
 import { PromotionCategoriesSection } from "./components/sections/promotion-categories-section";
-import { Footer } from "./components/layout/footer";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -19,16 +17,12 @@ function HomeContent() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <TopBar />
-      <main className="flex-1 w-full pt-4 pb-16">
-        <OrderTypeSection />
-        <BannerCarousel />
-        <FoodCategoriesSection />
-        <PromotionCategoriesSection />
-      </main>
-      <Footer />
-    </div>
+    <main className="flex-1 w-full pt-4 pb-16">
+      <OrderTypeSection />
+      <BannerCarousel />
+      <FoodCategoriesSection />
+      <PromotionCategoriesSection />
+    </main>
   );
 }
 
