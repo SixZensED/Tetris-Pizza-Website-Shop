@@ -211,8 +211,6 @@ export default function AddressForm({ address, onClose, onSuccess }: Props) {
         user_id: userId,
       };
 
-      console.log("Sending request with:", requestBody);
-
       const res = await fetch(url, {
         method: isEditing ? "PUT" : "POST",
         headers: {
@@ -311,7 +309,6 @@ export default function AddressForm({ address, onClose, onSuccess }: Props) {
               onPlaceChanged={() => {
                 if (autocomplete !== null) {
                   const place = autocomplete.getPlace();
-                  console.log("Selected Place:", place);
                   const addressComponents = place.address_components;
                   if (addressComponents) {
                     const getAddressComponent = (type) => {

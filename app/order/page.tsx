@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { TopBar } from "../components/layout/topbar";
 import { OrderTypeSection } from "../components/sections/order-type-section";
 import { FoodCategoriesSection } from "../components/sections/food-categories-section";
-import { Footer } from "../components/layout/footer";
 import SortDropdown from "../components/common/SortDropdown";
 
 const MenuList = dynamic(() => import("../components/menu/MenuList"), { ssr: false });
@@ -69,9 +68,6 @@ function OrderPageContent() {
           />
         </div>
       </main>
-      <div className="mt-auto">
-        <Footer />
-      </div>
     </div>
   );
 }

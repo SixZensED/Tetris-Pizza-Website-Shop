@@ -232,9 +232,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         avatar: userData.avatar_url, // Assuming an avatar_url might exist in userData
         balance: String(userData.balance), // Ensure balance is string
       });
-      setBalance(String(userData.balance)); // Set balance from /api/me response, now as string
-      console.log("CartContext: Fetched user data:", userData);
-      console.log("CartContext: Setting balance to:", String(userData.balance));
+      setBalance(String(userData.balance)); 
 
       // --- Cart fetching logic (existing) ---
       const response = await fetch(`${apiBaseUrl}/api/cart`, {
@@ -317,7 +315,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
           0,
         );
 
-        console.log("Transformed cart data:", transformedCart);
+
         setCart(transformedCart);
       }
     } catch (err: unknown) {
@@ -632,9 +630,6 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === "token" || e.key === "user_id") {
-        console.log(
-          `CartContext: Storage event detected for key: ${e.key}. Refreshing cart.`,
-        );
         fetchCart();
       }
     };

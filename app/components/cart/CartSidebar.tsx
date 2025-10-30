@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import ConfirmModal from "./confirm-modal";
-import SuccessModal from "./success-modal";
 import { useCart } from "@/app/contexts/CartContext";
 import { useLanguageContext } from "@/app/contexts/language-context";
 import { getTopBarCopy, getCartSidebarCopy } from "@/app/lib/translations";
@@ -103,13 +101,13 @@ export function CartSidebar() {
       setPaymentError(cartCopy.paymentFailed);
       return;
     }
-    if (balance === null || balance < cart.total_price) {
+    if (balance === null || parseFloat(balance) < cart.total_price) {
       setPaymentError(cartCopy.insufficientBalance);
       return;
     }
     setPaymentError(null);
     setPaymentStatus('processing');
-    openPurchaseConfirmModal(cart.total_price, currentUser.id, balance);
+    openPurchaseConfirmModal(cart.total_price, currentUser.id, parseFloat(balance));
   };
 
   return (
@@ -230,7 +228,6 @@ export function CartSidebar() {
                         <div className="flex flex-col items-end gap-1">
                           <button
                             onClick={() => {
-                              console.log("Removing item:", item);
                               if (!item.cart_item_id) {
                                 console.error(
                                   "No cart_item_id found for item:",
@@ -307,10 +304,12 @@ export function CartSidebar() {
                   <div className="flex justify-between text-sm text-gray-600">
                     <span>{cartCopy.yourBalance || 'Your Balance'}</span>
                     <span className="font-semibold text-yellow-600">
-                      {balance?.toLocaleString("th-TH", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      }) ?? "..."}
+                      {balance 
+                        ? parseFloat(balance).toLocaleString("th-TH", {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })
+                        : '...'}
                     </span>
                   </div>
                   <div className="flex justify-between font-semibold text-gray-800">
@@ -327,13 +326,13 @@ export function CartSidebar() {
                     openPurchaseConfirmModal(
                       cart.total_price,
                       currentUser.id,
-                      balance!, // balance is checked before this is called
+                      Number(balance), // balance is checked before this is called
                     )
                   }
                   disabled={
                     isLoading ||
                     balance === null ||
-                    balance < (cart?.total_price ?? 0)
+                    Number(balance) < (cart?.total_price ?? 0)
                   }
                   className="w-full bg-red-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >

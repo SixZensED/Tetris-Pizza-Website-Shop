@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import SuccessModal from "../components/modals/success/success-modal";
 import ErrorModal from "../components/modals/error/error-modal";
@@ -19,6 +20,7 @@ interface UserProfile {
   phone?: string;
   address?: string;
   balance?: string;
+  profileUrl?: string;
 }
 
 interface AddressType {
@@ -81,8 +83,7 @@ export default function AccountSettings() {
   };
 
   useEffect(() => {
-    const storedToken =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    const storedToken = localStorage.getItem("token");
 
     if (!storedToken) {
       router.push("/auth/login");
@@ -119,6 +120,7 @@ export default function AccountSettings() {
           email: data.email || "",
           phone: formatPhoneNumber(data.phoneNumber) || "",
           address: data.address || "",
+          profileUrl: data.profileUrl || "",
         });
       } catch {
         // fallback mock data
@@ -127,6 +129,7 @@ export default function AccountSettings() {
           email: "johnson@example.com",
           phone: "213-555-1234",
           address: "California - United States",
+          profileUrl: "",
         });
       } finally {
         setIsLoading(false);
@@ -215,12 +218,18 @@ export default function AccountSettings() {
     return formatted;
   };
 
+  const handleProfilePictureChange = (url: string) => {
+    setProfile(prev => ({
+      ...prev,
+      profileUrl: url
+    }));
+  };
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement> | { target: { name: string; value: any } },
   ) => {
     const { name, value } = e.target;
 
-    // Special handling for phone number formatting
     if (name === "phone") {
       const formattedPhone = formatPhoneNumber(value);
       setProfile((prev) => ({ ...prev, [name]: formattedPhone }));
@@ -229,54 +238,84 @@ export default function AccountSettings() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleExpiredToken = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+    }
+    router.push('/auth/login');
+  };
+
+  const validateToken = (token: string | null): boolean => {
+    if (!token) return false;
+    
+    const cleanToken = token.replace(/^"|"$/g, '');
+    
+    const tokenParts = cleanToken.split('.');
+    if (tokenParts.length !== 3) return false;
+    
+    return true;
+  };
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token) return;
-
     try {
-      const apiBaseUrl =
-        process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      
+      if (!token || !validateToken(token)) {
+        console.error('Invalid or missing authentication token');
+        handleExpiredToken();
+        return;
+      }
+      
+      const cleanToken = token.replace(/^"|"$/g, '');
 
-      // Prepare the request body with all updatable fields
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:3000";
+      const apiUrl = `${apiBaseUrl}/auth/update-profile`;
+
       const requestBody = {
         fullName: profile.name,
         email: profile.email,
-        phoneNumber: profile.phone?.replace(/\D/g, "") || "", // Remove all non-digit characters
+        phoneNumber: profile.phone?.replace(/\D/g, "") || "",
+        profileUrl: profile.profileUrl || "",
       };
 
-      console.log("Sending request to:", `${apiBaseUrl}/auth/update-profile`);
-      console.log("Request body:", requestBody);
-
-      const response = await fetch(`${apiBaseUrl}/auth/update-profile`, {
-        method: "PATCH",
+      const response = await fetch(apiUrl, {
+        method: 'PATCH',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${cleanToken}`,
+          'Accept': 'application/json'
         },
-        body: JSON.stringify(requestBody),
+        credentials: 'include',
+        body: JSON.stringify(requestBody)
       });
 
-      const responseData = await response.json();
-      console.log("Response status:", response.status);
-      console.log("Response data:", responseData);
+      const responseText = await response.text();
+      
+      let responseData;
+      try {
+        responseData = responseText ? JSON.parse(responseText) : {};
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', responseText);
+        throw new Error('Invalid response from server');
+      }
 
       if (!response.ok) {
-        throw new Error(responseData.message || "Failed to update profile");
+        if (response.status === 401) {
+          handleExpiredToken();
+          return;
+        }
+        throw new Error(responseData.message || `Failed to update profile: ${response.statusText}`);
       }
 
       setIsEditing(false);
       setShowSuccess(true);
-
-      // Auto-hide success modal after 3 seconds
       setTimeout(() => {
         setShowSuccess(false);
       }, 3000);
-    } catch (error: unknown) {
-      console.error("Error updating profile:", error);
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ";
+    } catch (error) {
+      console.error('Error in handleSave:', error);
+      const errorMessage = error instanceof Error ? error.message : 'เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ';
       setErrorMessage(errorMessage);
       setShowErrorModal(true);
     }
@@ -331,51 +370,59 @@ export default function AccountSettings() {
 
       {/* Content */}
       <main className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Sidebar */}
-          <div className="lg:col-span-3">
-            <div className="bg-white shadow rounded-lg p-6">
-              <div className="flex items-center">
-                <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-lg font-medium text-gray-900">
-                    {profile.name}
-                  </h3>
-                  <p className="text-sm text-gray-500">{profile.email}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Section */}
-          <div className="lg:col-span-9">
+        <div className="flex justify-center w-full">
+          <div className="w-full max-w-8xl">
             <div className="bg-white shadow rounded-lg overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">
                   ข้อมูลผู้ใช้
                 </h3>
-
                 <button
                   onClick={() => setIsEditing(true)}
                   className="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-white bg-[#b21807] hover:bg-[#8a1305]"
                 >
                   แก้ไขข้อมูล
                 </button>
+              </div>
+              
+              {/* Profile Image Section - Left Aligned */}
+              <div className="px-6 py-6 border-b border-gray-200">
+                <div className="flex items-start space-x-6">
+                  <div className="flex-shrink-0">
+                    <div className="relative h-32 w-32 rounded-full overflow-hidden border-2 border-gray-200">
+                      {profile.profileUrl ? (
+                        <Image
+                          src={profile.profileUrl}
+                          alt="Profile"
+                          width={128}
+                          height={128}
+                          className="object-cover w-full h-full"
+                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/default-avatar.png';
+                          }}
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-gray-100 flex items-center justify-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-16 w-16 text-gray-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Display Mode */}
@@ -415,17 +462,17 @@ export default function AccountSettings() {
                   </div>
                 </dl>
               </div>
-
-              {isEditing && (
-                <EditProfileModal
-                  open={isEditing}
-                  onClose={() => setIsEditing(false)}
-                  profile={profile}
-                  handleInputChange={handleInputChange}
-                  handleSubmit={handleSubmit}
-                />
-              )}
             </div>
+
+            {/* Edit Profile Modal */}
+            <EditProfileModal
+              open={isEditing}
+              onClose={() => setIsEditing(false)}
+              profile={profile}
+              handleInputChange={handleInputChange}
+              handleSubmit={handleSave}
+              onProfilePictureChange={handleProfilePictureChange}
+            />
 
             {/* Change Password Section */}
             <div className="mt-8 bg-white shadow rounded-lg overflow-hidden">

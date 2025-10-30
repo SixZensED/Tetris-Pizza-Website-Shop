@@ -19,7 +19,8 @@ export default function TrueMoneyModal({ isOpen, onClose }: TrueMoneyModalProps)
   const [errorMessage, setErrorMessage] = useState('');
 
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent form submission from refreshing the page
     if (!amount || Number(amount) <= 0) {
       alert('กรุณาใส่จำนวนเงินที่ถูกต้อง');
       return;
@@ -57,6 +58,7 @@ export default function TrueMoneyModal({ isOpen, onClose }: TrueMoneyModalProps)
     setAmount('');
     await refreshCart(); // Refresh user balance and cart
     onClose(); // Close the main modal completely.
+    window.location.reload(); // Reload the page to update the UI
   };
 
   const handleCloseErrorModal = () => {
@@ -98,7 +100,7 @@ export default function TrueMoneyModal({ isOpen, onClose }: TrueMoneyModalProps)
           </button>
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-4">
             <div>
               <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-1">จำนวนเงิน</label>
@@ -112,20 +114,19 @@ export default function TrueMoneyModal({ isOpen, onClose }: TrueMoneyModalProps)
               />
             </div>
           </div>
-        </div>
-
-        <div className="flex justify-end items-center gap-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end items-center gap-3 pt-4 border-t border-gray-200">
             <button onClick={onClose} className="px-4 py-2 rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors font-semibold">
                 ยกเลิก
             </button>
             <button
-                onClick={handleSubmit}
+                type="submit"
                 disabled={!amount || Number(amount) <= 0 || isLoading}
                 className="px-6 py-2 rounded-lg bg-[#b21807] text-white font-semibold hover:bg-[#9c1506] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-                เติมเงิน
+                {isLoading ? 'กำลังดำเนินการ...' : 'เติมเงิน'}
             </button>
-        </div>
+          </div>
+        </form>
       </div>
       </div>
       )}
