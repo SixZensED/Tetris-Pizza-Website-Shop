@@ -60,7 +60,35 @@ export function clearAuth(): void {
 // Token Validation
 export function parseJwt(token: string): TokenPayload | null {
   try {
-    return JSON.parse(atob(token.split('.')[1]));
+    if (!token) {
+      console.error('No token provided');
+      return null;
+    }
+    
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      console.error('Invalid token format: expected 3 parts');
+      return null;
+    }
+
+    // Replace URL-safe base64 characters and add padding if needed
+    const base64Url = parts[1];
+    const base64 = base64Url
+      .replace(/\-/g, '+')
+      .replace(/\_/g, '/');
+    
+    const paddedBase64 = base64.padEnd(
+      base64.length + (4 - (base64.length % 4)) % 4,
+      '='
+    );
+
+    try {
+      const decoded = JSON.parse(atob(paddedBase64));
+      return decoded as TokenPayload;
+    } catch (e) {
+      console.error('Failed to parse token payload:', e);
+      return null;
+    }
   } catch (e) {
     console.error('Failed to parse JWT:', e);
     return null;

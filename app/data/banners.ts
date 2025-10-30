@@ -7,21 +7,21 @@ export type Banner = {
 
 export const BANNERS: Banner[] = [
   {
-    id: "dubai-chocolate",
-    image: "/images/banners/Dubai Chocolate.png",
-    alt: "Dubai chocolate pizza banner",
+    id: "deluxe mixed pizza",
+    image: "/images/banners/Deluxe Mixed Pizza.png",
+    alt: "Deluxe mixed pizza banner",
     fit: "contain",
   },
   {
-    id: "mint-chocolate",
-    image: "/images/banners/Mint Chocolate.png",
-    alt: "Mint chocolate pizza banner",
+    id: "island delight pizza",
+    image: "/images/banners/Island Delight Pizza.png",
+    alt: "Island delight pizza banner",
     fit: "contain",
   },
   {
-    id: "rum-raisins",
-    image: "/images/banners/Rum.png",
-    alt: "Rum raisin celebration banner",
+    id: "double pepperoni",
+    image: "/images/banners/Double Pepperroni Pizza.png",
+    alt: "Double pepperoni banner",
     fit: "contain",
   },
 ];
