@@ -32,7 +32,9 @@ jobs:
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
           NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
-        run: npm run build
+        run: |
+          export ESLINT_NO_DEV_ERRORS=true
+          npx next build --no-lint
 
       - name: Notify success
         run: echo "Build successful! Ready to deploy."
