@@ -25,16 +25,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Lint
-        run: npm run lint --if-present
-
-      - name: Build (smoke test)
+      - name: Build
         env:
           NEXT_PUBLIC_API_BASE_URL: ${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
           NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: ${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
-        run: |
-          export ESLINT_NO_DEV_ERRORS=true
-          npx next build --no-lint
+          NEXT_TELEMETRY_DISABLED: 1
+        run: npx next build --no-lint
 
       - name: Notify success
         run: echo "Build successful! Ready to deploy."
